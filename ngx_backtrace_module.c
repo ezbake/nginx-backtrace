@@ -184,8 +184,13 @@ ngx_backtrace_files(ngx_conf_t *cf, ngx_command_t *cmd,
         return NGX_CONF_ERROR;
     }
 
-    log = ngx_log_create(cf->cycle, &file);
+    log = ngx_pcalloc(cf->cycle->pool, sizeof(ngx_log_t));
     if (log == NULL) {
+        return NGX_CONF_ERROR;
+    }
+
+    log->file = ngx_conf_open_file(cf->cycle, &file);
+    if (log->file == NULL) {
         return NGX_CONF_ERROR;
     }
 
